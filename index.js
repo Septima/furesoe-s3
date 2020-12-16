@@ -8,7 +8,7 @@ import bygningsreglementerForLokalplan from "./src/bygningsreglementerForLokalpl
 
 import ClassRegistry from "@septima/septima-search/src/js/ClassRegistry"
 
-const demoTypes = new ClassRegistry("s3-furesoe.")
+const demoTypes = new ClassRegistry("furesoe-s3.")
 
 demoTypes.setTypes({
   ItemsForAddressProvider: {

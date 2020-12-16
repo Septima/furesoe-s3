@@ -276,14 +276,14 @@ datafordeler:
       certificateFilename: pfx_cert.p12
 searchers:
   gc2:
-    _type: s3-furesoe.gc2Searcher
+    _type: furesoe-s3.gc2Searcher
     _options:
       #host: "http://gc2/api/v1/sql/furesoe?"
       targets:
         - matrikulaere_foreninger
         - tingbog_servitutter  
     detailhandlers:
-      - _type: s3-furesoe.gc2InfoProvider
+      - _type: furesoe-s3.gc2InfoProvider
         _options:
           fields:
             matrikulaere_foreninger: ["gid", "administrator","formand","type_mg","weblink","formand_navn","formand_adresse","formand_mail","formand_telefonnr","cvrnr","overordnet","medlemspligt","medlemspligt_jf","link","dato_ajour"]
@@ -369,7 +369,7 @@ searchers:
                 type: labelvalue
                 label: Ingen foreninger fundet på husnummeret
             searchers:
-              - _type: s3-furesoe.gc2Searcher
+              - _type: furesoe-s3.gc2Searcher
                 _options:
                   minimumShowCount: 3
                   targets:
@@ -382,7 +382,7 @@ searchers:
                 type: labelvalue
                 label: Ingen støjmålinger fundet på husnummeret
             searchers:
-              - _type: s3-furesoe.gc2Searcher
+              - _type: furesoe-s3.gc2Searcher
                 _options:
                   minimumShowCount: 3
                   targets:
@@ -397,7 +397,7 @@ searchers:
                 - retskredse
               geoSearcher:
                 _ref: "$.searchers.geosearcher"
-          - _type: s3-furesoe.foreningerForAdresse
+          - _type: furesoe-s3.foreningerForAdresse
             _options:
               header: Foreninger
           - _type: Septima.Search.SqDetailsHandler
@@ -407,7 +407,7 @@ searchers:
                 type: labelvalue
                 label: Ingen servitutter fundet på husnummeret
             searchers:
-              - _type: s3-furesoe.gc2Searcher
+              - _type: furesoe-s3.gc2Searcher
                 _options:
                   minimumShowCount: 3
                   targets:
@@ -419,15 +419,15 @@ searchers:
             type: labelvalue
             label: Ingen servitutter fundet på husnummeret
         searchers:
-          - _type: s3-furesoe.gc2Searcher
+          - _type: furesoe-s3.gc2Searcher
             _options:
               minimumShowCount: 3
               targets:
                 - tingbog_servitutter
-      - _type: s3-furesoe.byggeSagerforAddresseJordstykke
+      - _type: furesoe-s3.byggeSagerforAddresseJordstykke
         _options:
           header: Byggesager
-      - _type: s3-furesoe.foreningerForAdresse
+      - _type: furesoe-s3.foreningerForAdresse
         _options:
           header: Foreninger
           renderHints:
@@ -496,7 +496,7 @@ searchers:
       returnCentroid: true
     detailhandlers:
       - _ref: "$.ejendomsperspektiv.omjordstykkethandler"
-      - _type: s3-furesoe.byggeSagerforAddresseJordstykke
+      - _type: furesoe-s3.byggeSagerforAddresseJordstykke
         _options:
           header: Byggesager
       - _type: datafordeler.BygningerForHusnummerJordstykke
@@ -580,17 +580,17 @@ searchers:
       - _type: Septima.Search.ComposedDetailsHandler
         _options:
           id: omplanen
-          buttonText: 'Offentlige links'
+          buttonText: 'Om planen'
         detailhandlers:
-        - _type: "Septima.Search.PlanInfoProvider"
-          _options:
-            id: omplanen
-            buttonText: Om planen
-            fields:
-              lp: [plannr', 'plannavn', 'anvendelsegenerel', 'doklink', 'anvspec', 'datovedt', 'datoforsl','byggefelter_result','delomraader_result']
-        - _type: "s3-furesoe.bygningsreglementerForLokalplan"
-          _options:
-            header: Bygningsreglementer
+          - _type: "Septima.Search.PlanInfoProvider"
+            _options:
+              id: omplanen
+              buttonText: Om planen
+              fields:
+                lp: [plannr', 'plannavn', 'anvendelsegenerel', 'doklink', 'anvspec', 'datovedt', 'datoforsl','byggefelter_result','delomraader_result']
+          - _type: "furesoe-s3.bygningsreglementerForLokalplan"
+            _options:
+              header: Bygningsreglementer
       - _ref:  "$.detailproviders.sqEjendom"
       - _ref: $.ejerservice.EjerskaberForGeometriProvider
 
