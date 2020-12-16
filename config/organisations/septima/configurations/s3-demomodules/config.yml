@@ -1,0 +1,619 @@
+---
+controller:
+  _type: Septima.Search.Controller
+  _options:
+    blankBehavior: search
+  searchers:
+    - _ref: "$.searchers.dawa"
+    #- _ref: "$searchers.kloakoplandsearcher"
+    - _ref: "$.searchers.geosearcher"
+    - _ref: "$.searchers.plansystemsearcher"
+    #- _ref: "$.searchers.plansystemFtsearcher"
+    - _ref: "$.searchers.cvr" 
+    - _ref: "$.datafordeler.ejendomssearcher"
+    - _ref: "$.datafordeler.bygningssearcher"
+    - _ref: "$.searchers.geostednavnsearcher"
+    - _ref: "$.searchers.geometrysearcher"
+    - _ref: "$.searchers.fkgsearcher"
+    - _ref: "$.searchers.gc2"
+parameters:
+  #Bruges som option til alle searchere, som tager kommunekode som parameter.
+  # "*": Alle kommuner, "101": København, "101 157": København og Gentofte
+  kommunekode: "190"
+detailproviders:
+  sqKloakoplandDetailsHandler:
+    _type: Septima.Search.SqDetailsHandler
+    _options:
+      buttonText: "Spildevandsplan"
+    searchers:
+      - _ref: "$.searchers.kloakoplandsearcher"
+  tinglysningsDetailHandler:
+    _type: Septima.Search.TinglysningerForAdresseHandler
+  dokLinksForLokalplan:
+    _type: Septima.Search.DokLinksForLokalplan
+  sqPlanerDetailsHandler:
+    _type: Septima.Search.SqDetailsHandler
+    _options:
+      id: planer
+      buttonText: "Planer"
+      noResultsListItem:
+        type: labelvalue
+        label: Ingen planer fundet
+    searchers:
+      - _ref: "$.searchers.plansystemsearcher"
+  sqEjendom:
+    _type: Septima.Search.SqDetailsHandler
+    _options:
+      id: ejendomme
+      buttonText: "Ejendomme"
+    searchers:
+      - _ref: "$.datafordeler.ejendomssearcher"
+  offentligeLinksForHusnummer:
+    _type: Septima.Search.ComposedDetailsHandler
+    _options:
+      id: offentligelinks
+      buttonText: 'Offentlige links'
+    detailhandlers:
+      - _type: Septima.Search.OffentligeLinksForAdresseMatrikel
+        _options:
+          links: ["*"]
+      #- _type: Septima.Search.TinglysningerForAdresseHandler
+  offentligeLinksForJordstykke:
+    _type: Septima.Search.ComposedDetailsHandler
+    _options:
+      id: offentligelinks
+      buttonText: 'Offentlige links'
+    detailhandlers:
+      - _type: Septima.Search.OffentligeLinksForAdresseMatrikel
+        _options:
+          links: ["*"]
+      #- _ref: $.datafordeler.tingbogslinks
+  offentligeLinksForEjendom:
+    _type: Septima.Search.ComposedDetailsHandler
+    _options:
+      id: offentligelinks
+      buttonText: 'Offentlige links'
+    detailhandlers:
+      - _ref: $.datafordeler.offentligelinks
+      #- _ref: $.datafordeler.tingbogslinks
+ejendomsperspektiv:
+  omjordstykkethandler:
+    _type: Septima.Search.ComposedDetailsHandler
+    _options:
+      id: omjordstykket
+      more: true
+      buttonText: 'Om jordstykket'
+      buttonImage: 'data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNSwxNy41OUwxNS41OSw3SDlWNUgxOVYxNUgxN1Y4LjQxTDYuNDEsMTlMNSwxNy41OVoiIC8+PC9zdmc+'
+    detailhandlers:
+      - _ref: "$.datafordeler.jordstykkeinfohandler"
+      - _type: datafordeler.EjendomsResultatForHusnummerJordstykkeProvider
+        _options:
+          searcher:
+            _ref: "$.datafordeler.ejendomssearcher"
+      - _type: datafordeler.ArealerForJordstykkeProvider
+        _options:
+          fetcher:
+            _ref: "$.datafordeler.fetcher"
+      - _ref: "$.datafordeler.jordstykkesekundaerinfohandler"
+      - _ref: "$.datafordeler.sagsoplysningerforjordstykkehandler"
+      - _type: Septima.Search.SqDetailsHandler
+        _options:
+          buttonText: Lokalplaner
+          noResultsListItem:
+            type: labelvalue
+            label: Ingen lokalplaner fundet for jordstykket
+        searchers:
+          - _type: Septima.Search.PlanSystemSearcher
+            _options:
+              minimumShowCount: 3
+              targets:
+                - vedtagetlokalplan
+              searchindexToken: septimaSEARCHDEMO-A7OLGHG2J4
+        detailhandlers:
+          - _type: "Septima.Search.PlanInfoProvider"
+datafordeler:
+  ejendomssearcher:
+    _type: datafordeler.EjendomsSearcher
+    _options:
+      fetcher:
+        _ref: "$.datafordeler.fetcher"
+      showExamples: true        
+      geosearcher:
+        _ref: "$.searchers.geosearcher"
+    detailhandlers:
+      - _type: Septima.Search.ComposedDetailsHandler
+        _options:
+          id: omejendommen
+          more: true
+          buttonText: 'Om ejendommen'
+          buttonImage: 'data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNSwxNy41OUwxNS41OSw3SDlWNUgxOVYxNUgxN1Y4LjQxTDYuNDEsMTlMNSwxNy41OVoiIC8+PC9zdmc+'
+        detailhandlers:
+          - _ref: "$.datafordeler.omejendommenhandler"
+          - _type: Septima.Search.SqDetailsHandler
+            _options:
+              buttonText: Lokalplaner
+              noResultsListItem:
+                type: labelvalue
+                label: Ingen lokalplaner fundet for ejendommen
+            searchers:
+              - _type: Septima.Search.PlanSystemSearcher
+                _options:
+                  targets:
+                    - vedtagetlokalplan
+                  searchindexToken: septimaSEARCHDEMO-A7OLGHG2J4
+      - _ref: "$.datafordeler.vurderingshandler"
+      - _type: datafordeler.JordstykkerForEjendom
+        _options:
+          id: jordstykker
+          geosearcher:
+            _ref: "$.searchers.geosearcher"
+      - _type: datafordeler.BygningerForEjendom
+        _options:
+          id: bygninger
+          bygningssearcher:
+            _ref: "$.datafordeler.bygningssearcher"
+      - _ref: "$.detailproviders.sqPlanerDetailsHandler"
+      - _type: Septima.Search.DagiInfoProvider
+        _options:
+          id: administrativinddeling
+          buttonText: Administrativ inddeling
+          fields:
+            - kommuner_result
+            - sogne_result
+            - politikredse_result
+            - retskredse_result
+            - opstillingskredse_result
+          geoSearcher:
+            _ref: "$.searchers.geosearcher"
+      - _ref: $.detailproviders.offentligeLinksForEjendom
+  bygningssearcher:
+    _type: datafordeler.BygningsSearcher
+    _options:
+      fetcher:
+        _ref: "$.datafordeler.fetcher"
+    detailhandlers:
+      - _type: Septima.Search.ComposedDetailsHandler
+        _options:
+          id: ombygningen
+          more: true
+          buttonText: 'Om bygningen'
+          buttonImage: 'data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNSwxNy41OUwxNS41OSw3SDlWNUgxOVYxNUgxN1Y4LjQxTDYuNDEsMTlMNSwxNy41OVoiIC8+PC9zdmc+'
+        detailhandlers:
+          - _ref: "$.datafordeler.ombygningenhandler"
+          - _type: Septima.Search.SqDetailsHandler
+            _options:
+              buttonText: Lokalplaner
+              noResultsListItem:
+                type: labelvalue
+                label: Ingen lokalplaner fundet for bygningen
+            searchers:
+              - _type: Septima.Search.PlanSystemSearcher
+                _options:
+                  targets:
+                    - vedtagetlokalplan
+                  searchindexToken: septimaSEARCHDEMO-A7OLGHG2J4
+  jordstykkeinfohandler:
+    _type: datafordeler.JordstykkeInfoProvider
+    _options:
+      fetcher:
+        _ref: "$.datafordeler.fetcher"
+  sagsoplysningerforjordstykkehandler:
+    _type: datafordeler.SagsoplysningerForJordstykkeProvider
+    _options:
+      fetcher:
+        _ref: "$.datafordeler.fetcher"
+  jordstykkesekundaerinfohandler:
+    _type: datafordeler.JordstykkeSekundaerInfoProvider
+    _options:
+      fetcher:
+        _ref: "$.datafordeler.fetcher"
+  omejendommenhandler:
+    _type: datafordeler.EjendomsInfoProvider
+    _options:
+      searcher:
+        _ref: "$.datafordeler.ejendomssearcher"
+      bygningsSearcher:
+        _ref: "$.datafordeler.bygningssearcher"
+      geosearcher:
+        _ref: "$.searchers.geosearcher"
+  ombygningenhandler:
+    _type: datafordeler.BygningsInfoProvider
+    _options:
+      sections:
+        - bbrkommune
+      fetcher:
+        _ref: "$.datafordeler.fetcher"
+      geosearcher:
+        _ref: "$.searchers.geosearcher"
+      ejendomsSearcher:
+        _ref: "$.datafordeler.ejendomssearcher"
+  vurderingshandler:
+    _type: datafordeler.VurderingsHandler
+    _options:
+      id: vurdering
+  husnumreforjordstykke:
+    _type: datafordeler.HusnumreForJordstykke
+    _options:
+      fetcher:
+        _ref: "$.datafordeler.fetcher"
+  tingbogslinks:
+    _type: datafordeler.TingbogsLinksForEjendomJordstykke
+    _options:
+      fetcher:
+        _ref: "$.datafordeler.fetcher"
+  offentligelinks:
+    _type: datafordeler.OffentligeLinks
+    _options:
+      links: ["*"]
+  fetcher:
+    _type: datafordeler.Fetcher
+    _options:
+      username: WJKYFPZASN
+      password: fgd4Septima
+      passphrase: BoerGo666
+      certificateDir:
+        _ref: $.env.configDir
+      certificateFilename: pfx_cert.p12
+searchers:
+  gc2:
+    _type: s3-furesoe.gc2Searcher
+    _options:
+      targets:
+        - matrikulaere_foreninger
+        - tingbog_servitutter  
+    detailhandlers:
+      - _type: s3-furesoe.gc2InfoProvider
+        _options:
+          fields:
+            matrikulaere_foreninger: ["gid", "administrator","formand","type_mg","weblink","formand_navn","formand_adresse","formand_mail","formand_telefonnr","cvrnr","overordnet","medlemspligt","medlemspligt_jf","link","dato_ajour"]
+            stoej: ["isov1","isov2"]
+            tingbog_servitutter: ["dokid","historiskid","servituttekst","servituttype","tingdato","paategndato","ogsaalystpaa","dokfilnavn","digitalservitut","paatalecvr","paataleberettiget","label","note","fra_side","til_side","bruger","oprettet_dato"]
+  dawa:
+    _type: Septima.Search.DawaSearcher
+    _options:
+      kommunekode:
+        _ref: $.parameters.kommunekode
+      minimumShowCount: 3
+    detailhandlers:
+      - _type: Septima.Search.ComposedDetailsHandler
+        _options:
+          id: omhusnummer
+          more: true
+          buttonText: 'Om adressen'
+          buttonImage: 'data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNSwxNy41OUwxNS41OSw3SDlWNUgxOVYxNUgxN1Y4LjQxTDYuNDEsMTlMNSwxNy41OVoiIC8+PC9zdmc+'
+        detailhandlers:
+          - _type: Septima.Search.HusnummerInfoProvider
+            _options:
+              buttonText: Om husnummeret
+              fields:
+                - postadresse
+                - id
+                - kode
+                - antaladdresser
+          - _type: datafordeler.EjendomsResultatForHusnummerJordstykkeProvider
+            _options:
+              searcher:
+                _ref: "$.datafordeler.ejendomssearcher"
+          - _type: datafordeler.BygningerForHusnummerJordstykke
+            _options:
+              searcher:
+                _ref: "$.datafordeler.bygningssearcher"
+          - _type: datafordeler.BoligerForHusnummerProvider
+            _options:
+              fetcher:
+                _ref: "$.datafordeler.fetcher"
+          - _type: Septima.Search.CvrVirksomhederForAdresseProvider
+            _options:
+              cvr_enhedSearcher:
+                _ref: "$.searchers.cvr"
+              mode: count
+          - _type: Septima.Search.SqDetailsHandler
+            _options:
+              buttonText: Lokalplaner
+              noResultsListItem:
+                type: labelvalue
+                label: Ingen lokalplaner fundet på adressen
+            searchers:
+              - _type: Septima.Search.PlanSystemSearcher
+                _options:
+                  minimumShowCount: 3
+                  targets:
+                    - vedtagetlokalplan
+                  searchindexToken: septimaSEARCHDEMO-A7OLGHG2J4
+                detailhandlers:
+                  - _type: "Septima.Search.PlanInfoProvider"
+          - _type: Septima.Search.SqDetailsHandler
+            _options:
+              buttonText: Skoledistrikter
+              noResultsListItem:
+                type: labelvalue
+                label: Ingen Skoledistrikter fundet på husnummeret
+            searchers:
+              - _type: Septima.Search.FkgSearcher
+                _options:
+                  minimumShowCount: 3
+                  targets:
+                    - t_5710_born_skole_dis_t
+                detailhandlers:
+                  - _type: "Septima.Search.FkgInfoProvider"
+                    _options:
+                      fields:
+                        t_5710_born_skole_dis_t: ['temanavn','udd_distrikt_navn']
+          - _type: Septima.Search.SqDetailsHandler
+            _options:
+              buttonText: Foreninger
+              noResultsListItem:
+                type: labelvalue
+                label: Ingen foreninger fundet på husnummeret
+            searchers:
+              - _type: s3-furesoe.gc2Searcher
+                _options:
+                  minimumShowCount: 3
+                  targets:
+                    - matrikulaere_foreninger
+
+          - _type: Septima.Search.SqDetailsHandler
+            _options:
+              buttonText: Støjmåling
+              noResultsListItem:
+                type: labelvalue
+                label: Ingen støjmålinger fundet på husnummeret
+            searchers:
+              - _type: s3-furesoe.gc2Searcher
+                _options:
+                  minimumShowCount: 3
+                  targets:
+                    - stoej
+          - _type: Septima.Search.DagiInfoProvider
+            _options:
+              buttonText: Administrativ inddeling
+              fields:
+                - kommuner
+                - sogne
+                - politikredse
+                - retskredse
+              geoSearcher:
+                _ref: "$.searchers.geosearcher"
+          - _type: s3-furesoe.foreningerForAdresse
+            _options:
+              header: Foreninger
+          - _type: Septima.Search.SqDetailsHandler
+            _options:
+              buttonText: Servituttter
+              noResultsListItem:
+                type: labelvalue
+                label: Ingen servitutter fundet på husnummeret
+            searchers:
+              - _type: s3-furesoe.gc2Searcher
+                _options:
+                  minimumShowCount: 3
+                  targets:
+                    - tingbog_servitutter
+      - _type: Septima.Search.SqDetailsHandler
+        _options:
+          buttonText: Servituttter
+          noResultsListItem:
+            type: labelvalue
+            label: Ingen servitutter fundet på husnummeret
+        searchers:
+          - _type: s3-furesoe.gc2Searcher
+            _options:
+              minimumShowCount: 3
+              targets:
+                - tingbog_servitutter
+      - _type: s3-furesoe.byggeSagerforAddresseJordstykke
+        _options:
+          header: Byggesager
+      - _type: s3-furesoe.foreningerForAdresse
+        _options:
+          header: Foreninger
+          renderHints:
+              - "nomap"
+      - _type: Septima.Search.CvrVirksomhederForAdresseProvider
+        _options:
+          id: virksomheder
+          cvr_enhedSearcher:
+            _ref: "$.searchers.cvr"
+          more: false
+      # - _type: Septima.Search.ComposedDetailsHandler
+      #   _options:
+      #     id: planer
+      #     more: true
+      #     buttonText: 'Planer'
+      #     buttonImage: 'data:image/svg+xml;base64, PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNSwxNy41OUwxNS41OSw3SDlWNUgxOVYxNUgxN1Y4LjQxTDYuNDEsMTlMNSwxNy41OVoiIC8+PC9zdmc+'
+      #   detailhandlers:
+      #     - _ref: "$.detailproviders.sqPlanerDetailsHandler"
+      #     - _ref: "$.detailproviders.sqKloakoplandDetailsHandler"   
+      - _ref: "$.detailproviders.sqPlanerDetailsHandler"
+      - _ref: "$.detailproviders.sqKloakoplandDetailsHandler"     
+      - _type: Septima.Search.DagiInfoProvider
+        _options:
+          id: administrativinddeling
+          buttonText: Administrativ inddeling
+          fields:
+            - kommuner_result
+            - sogne_result
+            - opstillingskredse_result
+            - politikredse_result
+            - retskredse_result
+          geoSearcher:
+            _ref: "$.searchers.geosearcher"
+      - _ref: "$.detailproviders.offentligeLinksForHusnummer"
+      - _type: Septima.Search.SkraafotoProvider
+        _options:
+          buttonText: Skraafotos
+          header: SDFE skråfotos
+          token: "ef5e6494-4755-4d45-a5b5-8bbbd3fce265"
+  cvr:
+    _type: Septima.Search.CVR_enhedSearcher
+    _options:
+      kommunekode:
+        _ref: $.parameters.kommunekode
+      searchindexToken: septimaSEARCHDEMO-A7OLGHG2J4
+    detailhandlers:
+      - _type: Septima.Search.CvrInfoProvider
+        _options:
+          id: omproduktionsenheden
+          buttonText: enheden
+          fields: ["hovedbranche","navn","email","tlf","adresse","adresse_result","cvrlink"]
+      - _type: Septima.Search.RegnskaberForCvrNummerHandler
+        _options:
+          id: regnskaber
+      - _ref: $.ejerservice.EjerskaberForCvrProvider
+  geosearcher:
+    _type: Septima.Search.GeoSearch
+    _options:
+      targets:
+        - matrikelnumre
+      kommunekode:
+        _ref: $.parameters.kommunekode
+      authParams:
+        login: septima
+        password: fgd4Septima
+      returnCentroid: true
+    detailhandlers:
+      - _ref: "$.ejendomsperspektiv.omjordstykkethandler"
+      - _type: s3-furesoe.byggeSagerforAddresseJordstykke
+        _options:
+          header: Byggesager
+      - _type: datafordeler.BygningerForHusnummerJordstykke
+        _options:
+          id: bygninger
+          searcher:
+            _ref: "$.datafordeler.bygningssearcher"
+      - _ref: "$.detailproviders.sqPlanerDetailsHandler"
+      - _type: Septima.Search.SqDetailsHandler
+        _options:
+          id: adresser
+          buttonText: Adresser
+          noResultsListItem:
+            type: labelvalue
+            label: Der er ikke fundet nogen adresser
+        searchers:
+          - _ref: $.searchers.dawa
+        detailhandlers:
+          - _type: Septima.Search.HusnummerInfoProvider
+            _options:
+              fields: ["vejnavn", "husnummer", "postdistrikt", "kommune"]
+      - _type: Septima.Search.DagiInfoProvider
+        _options:
+          id: administrativinddeling
+          buttonText: Administrativ inddeling
+          fields:
+            - kommuner_result
+            - sogne_result
+            - opstillingskredse_result
+            - politikredse_result
+            - retskredse_result
+          geoSearcher:
+            _ref: "$.searchers.geosearcher"
+      - _ref: "$.detailproviders.offentligeLinksForJordstykke"
+  geostednavnsearcher:
+    _type: Septima.Search.GeoStednavnSearcher
+    _options:
+      authParams:
+        login: septima
+        password: fgd4Septima
+      kommunekode:
+        _ref: $.parameters.kommunekode
+    detailhandlers:
+      - _type: Septima.Search.InfoForGeoStednavnProvider
+        _options:
+          id: omstednavnet
+          fields: ["hovedtype","undertype", "primærtnavn","primærnavnestatus","indbyggerantal","bebyggelseskode","brofast"]
+  plansystemFtsearcher:
+    _type: Septima.Search.PlanSystemSearcher
+    _options:
+      minimumShowCount: 3
+      targets:
+        - vedtagetlokalplan
+      kommunekode:
+        _ref: $.parameters.kommunekode
+      searchindexToken: septimaSEARCHDEMO-A7OLGHG2J4
+      queryBehaviour: search
+    detailhandlers:
+      - _type: "Septima.Search.PlanInfoProvider"
+        _options:
+          id: omplanen
+          buttonText: Om planen
+          fields:
+            lp: [plannr', 'plannavn', 'anvendelsegenerel', 'doklink', 'anvspec', 'datoforsl','datovedt','byggefelter_result','delomraader_result']
+      - _ref:  "$.detailproviders.sqEjendom"
+      - _ref: $.ejerservice.EjerskaberForGeometriProvider
+  plansystemsearcher:
+    _type: Septima.Search.PlanSystemSearcher
+    _options:
+      minimumShowCount: 3
+      targets:
+        - vedtagetlokalplan
+        - kommuneplanramme
+        - byggefelt
+        - delområde
+      kommunekode:
+        _ref: $.parameters.kommunekode
+      searchindexToken: septimaSEARCHDEMO-A7OLGHG2J4
+      queryBehaviour: search
+    detailhandlers:
+      - _type: "Septima.Search.PlanInfoProvider"
+        _options:
+          id: omplanen
+          buttonText: Om planen
+          fields:
+            lp: [plannr', 'plannavn', 'anvendelsegenerel', 'doklink', 'anvspec', 'datovedt', 'datoforsl','byggefelter_result','delomraader_result']
+      - _ref:  "$.detailproviders.sqEjendom"
+      - _ref: $.ejerservice.EjerskaberForGeometriProvider
+
+  geometrysearcher:
+    _type: Septima.Search.ClientSearcher
+    _options:
+      singular: Geometry
+      plural: Geometries
+      isAsync: false
+      usesGeoFunctions: true
+      provider:
+        _type: Septima.Search.GeometrySearchProvider
+    detailhandlers:
+    - _type: Septima.Search.SqDetailsHandler
+      _options:
+        buttonText: Vedtagne lokalplaner
+      searchers:
+      - _ref: "$.searchers.plansystemsearcher"
+    - _ref: "$.ejerservice.EjerskaberForGeometriProvider"
+  fkgsearcher:
+    _type: Septima.Search.FkgSearcher
+    _options:
+      minimumShowCount: 3
+      targets:
+        - t_5710_born_skole_dis_t
+    detailhandlers:
+      - _type: "Septima.Search.FkgInfoProvider"
+        _options:
+          fields:
+              t_5710_born_skole_dis_t: ['temanavn','udd_distrikt_navn']
+  kloakoplandsearcher:
+    _type: Septima.Search.PlanSystemSearcher
+    _options: 
+      targets: ['vedtagetkloakopland','mulighedforudtraedenkloakopland']
+    detailhandlers:
+      - _type: "Septima.Search.PlanInfoProvider"
+ejerservice:
+  fetcher:
+    _type: ejerfortegnelse.Fetcher
+    _options:
+      endPoint: http://ejerservice.test.septima.dk/api
+      ejendomsSearcher:
+        _ref: "$.datafordeler.ejendomssearcher"
+  EjerskaberForCvrProvider:
+    _type: ejerfortegnelse.EjerskaberForCvrProvider
+    _options:
+      id: ejendomme
+      fetcher:
+        _ref: $.ejerservice.fetcher
+  EjerskaberForGeometriProvider:
+    _type: ejerfortegnelse.EjerskaberForGeometriProvider
+    _options:
+      id: ejere
+      buttonText: Ejere
+      fetcher:
+        _ref: $.ejerservice.fetcher
+      downloadText: Download listen

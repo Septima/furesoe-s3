@@ -1,0 +1,32 @@
+---
+controller:
+  _type: Septima.Search.Controller
+  _options:
+    blankBehavior: search
+  searchers:
+    - _type: Septima.Search.DawaSearcher
+      _options:
+        kommunekode: 190
+        minimumShowCount: 3
+        allowDetails: false
+      detailhandlers:
+        - _type: s3-demomodules/ItemsForAddressProvider
+          _options:
+            header: Demo details provider
+        - _type: s3-demomodules/byggeSagerforAddresseJordstykke
+          _options:
+            header: Byggesager
+    - _type: Septima.Search.GeoSearch
+      _options:
+        kommunekode: 190
+        targets:
+          - matrikelnumre
+        authParamsKortforsyningen:
+          - token: f7ed24b5623301a90c1c6e60b30ca174
+      authParams:
+        login: septima
+        password: fgd4Septima
+      detailhandlers:
+        - _type: s3-demomodules/byggeSagerforAddresseJordstykke
+          _options:
+            header: Byggesager
