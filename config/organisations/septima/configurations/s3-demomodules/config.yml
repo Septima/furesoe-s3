@@ -24,7 +24,7 @@ detailproviders:
   sqPlaner:
     _type: Septima.Search.SqDetailsHandler
     _options:
-      targets: #This expresses same as above
+      targets: 
         - typeId: [matrikulaere_foreninger]
       id: planer
       buttonText: "Planlægning"
@@ -36,7 +36,7 @@ detailproviders:
   sqHusnumre:
     _type: Septima.Search.SqDetailsHandler
     _options:
-      targets: #This expresses same as above
+      targets: 
         - typeId: [matrikulaere_foreninger]
       buttonText: Husnumre
     searchers:
