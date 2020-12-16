@@ -1,12 +1,12 @@
 {
-  "name": "s3-demomodules",
+  "name": "s3-furesoe",
   "version": "1.0.0",
   "main": "index.js",
-  "description": "A demo plugin package for Septima Search Server",
-  "author": "Klavs Pihlkjær",
+  "description": "A plugin package for Septima Search Server",
+  "author": "Artin Bjærge Jensen",
   "license": "Copyright (c) 2013-2020 Septima P/S",
   "peerDependencies": {
-    "@septima/septima-search-server":"0.18.0"
+    "@septima/septima-search-server":"0.18.3"
   },
   "devDependencies": {
     "@septima/septima-search": "5.18.0",
