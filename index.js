@@ -3,6 +3,8 @@ import byggeSagerforAddresseJordstykke from "./src/byggeSagerforAddresseJordstyk
 import foreningerForAdresse from "./src/foreningerForAdresse"
 import gc2Searcher from "./src/gc2Searcher"
 import gc2InfoProvider from "./src/gc2InfoProvider"
+import bygningsreglementerForLokalplan from "./src/bygningsreglementerForLokalplan"
+
 
 import ClassRegistry from "@septima/septima-search/src/js/ClassRegistry"
 
@@ -23,6 +25,9 @@ demoTypes.setTypes({
   },
   gc2InfoProvider: {
     classdesc: "Shows foreninger for a Dawa Adress"
+  },
+  bygningsreglementerForLokalplan: {
+    classdesc: "Shows foreninger for a Dawa Adress"
   }
 
 
@@ -33,5 +38,6 @@ demoTypes.addClass(byggeSagerforAddresseJordstykke, "byggeSagerforAddresseJordst
 demoTypes.addClass(foreningerForAdresse, "foreningerForAdresse")
 demoTypes.addClass(gc2Searcher, "gc2Searcher")
 demoTypes.addClass(gc2InfoProvider, "gc2InfoProvider")
+demoTypes.addClass(bygningsreglementerForLokalplan, "bygningsreglementerForLokalplan")
 
 export default demoTypes

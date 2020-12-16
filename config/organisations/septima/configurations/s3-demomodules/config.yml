@@ -577,12 +577,20 @@ searchers:
       searchindexToken: septimaSEARCHDEMO-A7OLGHG2J4
       queryBehaviour: search
     detailhandlers:
-      - _type: "Septima.Search.PlanInfoProvider"
+      - _type: Septima.Search.ComposedDetailsHandler
         _options:
           id: omplanen
-          buttonText: Om planen
-          fields:
-            lp: [plannr', 'plannavn', 'anvendelsegenerel', 'doklink', 'anvspec', 'datovedt', 'datoforsl','byggefelter_result','delomraader_result']
+          buttonText: 'Offentlige links'
+        detailhandlers:
+        - _type: "Septima.Search.PlanInfoProvider"
+          _options:
+            id: omplanen
+            buttonText: Om planen
+            fields:
+              lp: [plannr', 'plannavn', 'anvendelsegenerel', 'doklink', 'anvspec', 'datovedt', 'datoforsl','byggefelter_result','delomraader_result']
+        - _type: "s3-furesoe.bygningsreglementerForLokalplan"
+          _options:
+            header: Bygningsreglementer
       - _ref:  "$.detailproviders.sqEjendom"
       - _ref: $.ejerservice.EjerskaberForGeometriProvider
 
