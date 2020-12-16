@@ -37,15 +37,27 @@ export default class gc2Searcher extends Searcher {
 
    * @api
    */
-  constructor(options) {
-    super(options)
+  constructor(options = {}) {
+
+    let defaultOptions = {
+      host: "https://furesoe.mapcentia.com/api/v1/sql/furesoe"
+    }
+
+    super(Object.assign(defaultOptions, options))
     this.source = "furesoe"
+
     if (options.source) 
       this.source = options.source
-    
+ 
     this.targets = ['matrikulaere_foreninger']
+    this.host = "https://furesoe.mapcentia.com/api/v1/sql/furesoe"   
     if (typeof options !== 'undefined' && typeof options.targets !== 'undefined')
       this.targets = options.targets
+    
+    if (typeof options !== 'undefined' && typeof options.host !== 'undefined')
+      this.host = options.host
+ 
+    
     this.types = {
       "matrikulaere_foreninger": new ResultType({id: "matrikulaere_foreninger", singular: "Forening", plural: "Foreninger", queryBehaviour: "search", featuretype:"_01_fysisk_plan_og_naturbeskyt.matrikulaere_foreninger"}),
       "tingbog_servitutter": new ResultType({id: "tingbog_servitutter", singular: "Servitut", plural: "Servitutter", queryBehaviour: "search", featuretype:"_00_grundkort.vw_tingbog_servitutter_udbredelse"}),
@@ -187,12 +199,12 @@ export default class gc2Searcher extends Searcher {
   async fetch_gc2_ById(id,featuretype) {
     let typename= featuretype.split('.')[1]
     let response
-    console.log(`https://furesoe.mapcentia.com/api/v1/sql/furesoe?q=select \'${featuretype}\' as typename, * from ${featuretype} where dokid='${id}'`)
+    console.log(`${this.host}?srs=25832&q=select \'${featuretype}\' as typename, * from ${featuretype} where dokid='${id}'`)
     if (typename ==="vw_tingbog_servitutter_udbredelse"){
-      response = await this.fetch(`https://furesoe.mapcentia.com/api/v1/sql/furesoe?q=select \'${featuretype}\' as typename, * from ${featuretype} where dokid='${id}'`)
+      response = await this.fetch(`${this.host}?srs=25832&q=select \'${featuretype}\' as typename, * from ${featuretype} where dokid='${id}'`)
     }
     else {
-      response = await this.fetch(`https://furesoe.mapcentia.com/api/v1/sql/furesoe?q=select \'${featuretype}\' as typename, * from ${featuretype} where gid=${id}`)
+      response = await this.fetch(`${this.host}?srs=25832&q=select \'${featuretype}\' as typename, * from ${featuretype} where gid=${id}`)
     }
     if (response && response.features)
       return response.features
@@ -202,7 +214,7 @@ export default class gc2Searcher extends Searcher {
   async fetchFeatures(typename, wkt) {
 
     //let endPoint  = "https://fkg.mapcentia.com/api/v2/sql/fkg"
-    let endPoint = "https://furesoe.mapcentia.com/api/v1/sql/furesoe"
+    let endPoint = this.host
     let q= `SELECT \'${typename}\' as typename, * FROM ${typename} WHERE st_intersects(the_geom,st_setsrid(st_geometryFromText('${wkt}'),25832))`
     if (typename==='_00_grundkort.vw_tingbog_servitutter_udbredelse')
       q= `SELECT \'${typename}\' as typename, st_simplify(the_geom,25) as the_geom,gid,label,servituttekst,dokid,dokfilnavn FROM ${typename} WHERE st_intersects(the_geom,st_setsrid(st_geometryFromText('${wkt}'),25832))`
