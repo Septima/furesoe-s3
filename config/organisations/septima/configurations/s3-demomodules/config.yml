@@ -21,6 +21,26 @@ parameters:
   # "*": Alle kommuner, "101": København, "101 157": København og Gentofte
   kommunekode: "190"
 detailproviders:
+  sqPlaner:
+    _type: Septima.Search.SqDetailsHandler
+    _options:
+      targets: #This expresses same as above
+        - typeId: [matrikulaere_foreninger]
+      id: planer
+      buttonText: "Planlægning"
+      noResultsListItem:
+        type: labelvalue
+        label: Ingen planer fundet
+    searchers:
+      - _ref: "$.searchers.plansystemsearcher"
+  sqHusnumre:
+    _type: Septima.Search.SqDetailsHandler
+    _options:
+      targets: #This expresses same as above
+        - typeId: [matrikulaere_foreninger]
+      buttonText: Husnumre
+    searchers:
+      - _type: Septima.Search.DawaSearcher
   sqKloakoplandDetailsHandler:
     _type: Septima.Search.SqDetailsHandler
     _options:
@@ -258,6 +278,7 @@ searchers:
   gc2:
     _type: s3-furesoe.gc2Searcher
     _options:
+      #host: "http://gc2/api/v1/sql/furesoe?"
       targets:
         - matrikulaere_foreninger
         - tingbog_servitutter  
@@ -268,6 +289,8 @@ searchers:
             matrikulaere_foreninger: ["gid", "administrator","formand","type_mg","weblink","formand_navn","formand_adresse","formand_mail","formand_telefonnr","cvrnr","overordnet","medlemspligt","medlemspligt_jf","link","dato_ajour"]
             stoej: ["isov1","isov2"]
             tingbog_servitutter: ["dokid","historiskid","servituttekst","servituttype","tingdato","paategndato","ogsaalystpaa","dokfilnavn","digitalservitut","paatalecvr","paataleberettiget","label","note","fra_side","til_side","bruger","oprettet_dato"]
+      - _ref: "$.detailproviders.sqHusnumre"
+      - _ref: "$.detailproviders.sqPlaner"
   dawa:
     _type: Septima.Search.DawaSearcher
     _options:
