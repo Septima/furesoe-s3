@@ -1,4 +1,4 @@
-# s3-demomodules
+# furesoe-s3
 A demo plugin package for Septima Search Server  
 
 An example of how to package and document external Septima Search Server types
