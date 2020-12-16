@@ -11,7 +11,7 @@ This package installs _ItemsForAddressProvider_ as a details provider for Dawa A
 
 ### Install
 
-`npm install --production https://github.com/Septima/s3-demomodules.git --save`
+`npm install --production https://github.com/Septima/furesoe-s3.git --save`
 https://docs.npmjs.com/files/package.json#git-urls-as-dependencies
 
 ### Usage
@@ -23,7 +23,7 @@ Include as detailshandler for a Dawa Searcher.
   dawasearcher:
     _type: Septima.Search.DawaSearcher
     detailhandlers:
-      - _type: s3-demomodules/ItemsForAddressProvider
+      - _type: furesoe-s3.ItemsForAddressProvider
         _options:
           header: "Demo details provider"
 ```  
