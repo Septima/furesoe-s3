@@ -54,6 +54,8 @@ detailproviders:
   sqPlanerDetailsHandler:
     _type: Septima.Search.SqDetailsHandler
     _options:
+      targets:
+        - typeId: [adresse,matrikelnumre]
       id: planer
       buttonText: "Planer"
       noResultsListItem:
@@ -100,6 +102,8 @@ ejendomsperspektiv:
   omjordstykkethandler:
     _type: Septima.Search.ComposedDetailsHandler
     _options:
+      targets:
+        - typeId: [matrikelnumre] 
       id: omjordstykket
       more: true
       buttonText: 'Om jordstykket'
@@ -495,6 +499,11 @@ searchers:
         password: fgd4Septima
       returnCentroid: true
     detailhandlers:
+      - _type: Septima.Search.InfoForRetskredsProvider
+      - _type: Septima.Search.InfoForOpstillingsKredsProvider
+      - _type: Septima.Search.InfoForKommuneProvider
+      - _type: Septima.Search.InfoForPolitidistriktProvider
+      - _type: Septima.Search.InfoForPostdistriktProvider
       - _ref: "$.ejendomsperspektiv.omjordstykkethandler"
       - _type: furesoe-s3.byggeSagerforAddresseJordstykke
         _options:
@@ -507,6 +516,8 @@ searchers:
       - _ref: "$.detailproviders.sqPlanerDetailsHandler"
       - _type: Septima.Search.SqDetailsHandler
         _options:
+          targets:
+            - typeId: [matrikelnumre] 
           id: adresser
           buttonText: Adresser
           noResultsListItem:
@@ -520,6 +531,8 @@ searchers:
               fields: ["vejnavn", "husnummer", "postdistrikt", "kommune"]
       - _type: Septima.Search.DagiInfoProvider
         _options:
+          targets:
+            - typeId: [adresse,matrikelnumre] 
           id: administrativinddeling
           buttonText: Administrativ inddeling
           fields:

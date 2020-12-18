@@ -137,7 +137,7 @@ export default class gc2Searcher extends Searcher {
     let result = queryResult.addResult(this.source, typeId, title, description, geometry, feature)
     result.id = feature.properties.gid
     if (typeId==this.types.tingbog_servitutter.id)
-    result.id = feature.properties.dokid
+    result.id = feature.properties.gid
     return result
   }
 
@@ -201,7 +201,7 @@ export default class gc2Searcher extends Searcher {
     let response
     console.log(`${this.host}?srs=25832&q=select \'${featuretype}\' as typename, * from ${featuretype} where dokid='${id}'`)
     if (typename ==="vw_tingbog_servitutter_udbredelse"){
-      response = await this.fetch(`${this.host}?srs=25832&q=select \'${featuretype}\' as typename, * from ${featuretype} where dokid='${id}'`)
+      response = await this.fetch(`${this.host}?srs=25832&q=select \'${featuretype}\' as typename, * from ${featuretype} where gid='${id}'`)
     }
     else {
       response = await this.fetch(`${this.host}?srs=25832&q=select \'${featuretype}\' as typename, * from ${featuretype} where gid=${id}`)
