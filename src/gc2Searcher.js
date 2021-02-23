@@ -60,7 +60,7 @@ export default class gc2Searcher extends Searcher {
     
     this.types = {
       "matrikulaere_foreninger": new ResultType({id: "matrikulaere_foreninger", singular: "Forening", plural: "Foreninger", queryBehaviour: "search", featuretype:"_01_fysisk_plan_og_naturbeskyt.matrikulaere_foreninger"}),
-      "tingbog_servitutter": new ResultType({id: "tingbog_servitutter", singular: "Servitut", plural: "Servitutter", queryBehaviour: "search", featuretype:"_00_grundkort.vw_tingbog_servitutter_udbredelse"}),
+      "tingbog_servitutter": new ResultType({id: "tingbog_servitutter", singular: "Servitut", plural: "Servitutter", queryBehaviour: "search", featuretype:"_00_grundkort.matvw_tingbog_servitutter_udbredelse"}),
       "stoej": new ResultType({id: "stoej", title: "${feature.properties.isov1} - ${feature.properties.isov2} dBXX", singular: "Støjmåling", plural: "Støjmålinger", queryBehaviour: "search", featuretype:"_09_miljoebeskyttelse.vejstoej"})
 
  
@@ -216,7 +216,7 @@ export default class gc2Searcher extends Searcher {
     //let endPoint  = "https://fkg.mapcentia.com/api/v2/sql/fkg"
     let endPoint = this.host
     let q= `SELECT \'${typename}\' as typename, * FROM ${typename} WHERE st_intersects(the_geom,st_setsrid(st_geometryFromText('${wkt}'),25832))`
-    if (typename==='_00_grundkort.vw_tingbog_servitutter_udbredelse')
+    if (typename==='_00_grundkort.matvw_tingbog_servitutter_udbredelse')
       q= `SELECT \'${typename}\' as typename, the_geom as the_geom,gid,label,servituttekst,dokid,dokfilnavn FROM ${typename} WHERE st_intersects(the_geom,st_setsrid(st_geometryFromText('${wkt}'),25832))`
     let result
     result = await this.fetch(`${endPoint}?srs=25832&q=${q}`)
