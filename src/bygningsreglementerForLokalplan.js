@@ -48,7 +48,7 @@ class bygningsreglementerForLokalplan extends DetailsHandlerDef {
 
 
     let planid = result.id // Planid er id på result
-    let url = 'https://furesoe.mapcentia.com/api/v1/sql/furesoe?q=select NULLIF(bemaerkning, \'\') as bemaerkning,NULLIF(reglement_1,\'\') as reglement_1, NULLIF(reglement_2,\'\') as reglement_2 from _01_fysisk_plan_og_naturbeskyt.lokalplan_vedtaget_reglement WHERE planid=' + planid
+    let url = 'https://furesoe.mapcentia.com/api/v1/sql/furesoe?q=select NULLIF(bemaerkning, \'\') as bemaerkning,NULLIF(reglement_1,\'\') as reglement_1, NULLIF(reglement_2,\'\') as reglement_2,NULLIF(pdf_link3,\'\') as pdf_link3 from _01_fysisk_plan_og_naturbeskyt.lokalplan_vedtaget_reglement WHERE planid=' + planid
 
     let response = await fetch2(url, options)
     let features =  response.features
@@ -58,28 +58,30 @@ class bygningsreglementerForLokalplan extends DetailsHandlerDef {
 
     features.map(function (f){
 
-     //Hvis kun 1
-     if ( (f.properties.reglement_1 !== null  ) && (f.properties.reglement_2 === null )) {
+    
+     if  (f.properties.reglement_1 !== null  )  {
         detailItems.push({
             type: 'link',
             icon:icons.details.link,
-            link:  `http://geodocs/pdf/Bygningsreglementer/'${f.properties.reglement_1}.pdf`,
+            link:  `http://geodocs/pdf/Bygningsreglementer/${f.properties.reglement_1}.pdf`,
             linkTitle: `Bygningsreglement ${f.properties.reglement_1}`
           })
       }
-      //Hvis 1+2
-      else if (f.properties.reglement_1 !== null || f.properties.reglement_2 !== null) {
-        detailItems.push({
-            type: 'link',
-            icon:icons.details.link,
-            link:  `http://geodocs/pdf/Bygningsreglementer/'${f.properties.reglement_1}.pdf`,
-            linkTitle: `Bygningsreglement ${f.properties.reglement_1}`
-          })
+ 
+      if (f.properties.reglement_2 !== null ) {
           detailItems.push({
             type: 'link',
             icon:icons.details.link,
-            link:  `http://geodocs/pdf/Bygningsreglementer/'${f.properties.reglement_2}.pdf`,
+            link:  `http://geodocs/pdf/Bygningsreglementer/${f.properties.reglement_2}.pdf`,
             linkTitle: `Bygningsreglement ${f.properties.reglement_2}`
+          })    
+        }
+        if (f.properties.pdf_link3 !== null ) {
+          detailItems.push({
+            type: 'link',
+            icon:icons.details.link,
+            link:  `http://geodocs/pdf/Lokalplan_oevr_dok/${f.properties.pdf_link3}`,
+            linkTitle: `${f.properties.pdf_link3}`
           })    
         }
       else {  
