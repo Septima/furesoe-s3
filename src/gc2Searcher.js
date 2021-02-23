@@ -128,9 +128,11 @@ export default class gc2Searcher extends Searcher {
     description = feature.properties.servituttype
 }    
   if (typeId==this.types.stoej.id) {
-    if (feature.properties.isov1 ==0)
+    if (feature.properties.isov1 ==0){
       title = 'Under tærskel (<58 dB)'
+    }else {
     title = `${feature.properties.isov1} - ${feature.properties.isov2} dB`
+    }
     description = `Vejstøj 2018`
 }   
     let geometry = feature.geometry
