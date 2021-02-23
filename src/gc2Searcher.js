@@ -217,7 +217,7 @@ export default class gc2Searcher extends Searcher {
     let endPoint = this.host
     let q= `SELECT \'${typename}\' as typename, * FROM ${typename} WHERE st_intersects(the_geom,st_setsrid(st_geometryFromText('${wkt}'),25832))`
     if (typename==='_00_grundkort.vw_tingbog_servitutter_udbredelse')
-      q= `SELECT \'${typename}\' as typename, st_simplify(the_geom,25) as the_geom,gid,label,servituttekst,dokid,dokfilnavn FROM ${typename} WHERE st_intersects(the_geom,st_setsrid(st_geometryFromText('${wkt}'),25832))`
+      q= `SELECT \'${typename}\' as typename, the_geom as the_geom,gid,label,servituttekst,dokid,dokfilnavn FROM ${typename} WHERE st_intersects(the_geom,st_setsrid(st_geometryFromText('${wkt}'),25832))`
     let result
     result = await this.fetch(`${endPoint}?srs=25832&q=${q}`)
 
